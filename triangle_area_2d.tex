@@ -1,0 +1,139 @@
+\documentclass[11pt]{article}%设置文档类型{article}和字体大小{11pt}，适配本地字体
+
+\usepackage[a4paper]{geometry}%页面布局，纸张大小[a4paper]
+\geometry{left=2.0cm,right=2.0cm,top=2.5cm,bottom=2.5cm}%页面边距
+\usepackage[UTF8]{ctex}%latex支持中文宏包
+\usepackage{amsmath, amsfonts, amssymb, amsthm}%数学公式环境、数学字体、数学字体扩展包、定理环境
+\usepackage{bm,mathtools}%数学粗体、amsmath扩展包
+\usepackage{graphicx}%插入和管理图片
+\usepackage[graphicx]{realboxes}%创建和管理盒子（装有文本和图形）
+\usepackage{algorithm,algorithmicx}%支持伪代码宏包
+\usepackage[noend]{algpseudocode}%支持伪代码宏包
+\usepackage{fancyhdr}%定制页眉和页脚
+\setlength{\headheight}{13.6pt}%避免页眉高度警告
+\pagestyle{fancy}
+\fancyhf{} % 清空默认的页眉和页脚
+\fancyhead[L]{\kaishu 中国科学院大学}
+\fancyhead[C]{林俊杰2023K8009916012}
+\fancyhead[R]{\kaishu}
+\fancyfoot[C]{\thepage}
+\usepackage{booktabs}%美化表格宏包
+\usepackage{caption}%定制图表标题宏包
+\usepackage{xcolor}%切换字体颜色
+\usepackage{placeins}%控制浮动体位置
+\usepackage{cleveref}%智能引用
+\crefname{figure}{图}{figures}
+\Crefname{figure}{Figure}{Figures}
+\crefname{table}{表}{tables}
+\Crefname{table}{Table}{Tables}
+\usepackage{tikz} % 绘图宏包
+\usetikzlibrary{arrows.meta, positioning, calc, shapes, fit, decorations.pathreplacing} % 加载绘图库
+\usepackage{tikz-3dplot} %%三维图形绘制需要的宏包
+\usetikzlibrary{patterns}%%填充使用的宏包 
+
+%数学环境计数器
+\newcounter{counter_exm}\setcounter{counter_exm}{1}
+%\newcounter{counter_thm}\setcounter{counter_thm}{1}
+%\newcounter{counter_lma}\setcounter{counter_lma}{1}
+%\newcounter{counter_dft}\setcounter{counter_dft}{1}
+%\newcounter{counter_clm}\setcounter{counter_clm}{1}
+%\newcounter{counter_cly}\setcounter{counter_cly}{1}
+
+%图标随章节计数{章节.张数}
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+
+\newtheorem{theorem}{{\hskip 1.7em \bf 定理}}
+\newtheorem{lemma}[theorem]{\hskip 1.7em 引理}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{\hskip 1.7em 命题}
+\newtheorem{corollary}[theorem]{\hskip 1.7em 推论}
+\newtheorem{definition}[theorem]{\hskip 1.7em 定义}
+
+\renewcommand{\emph}[1]{{\kaishu #1}}
+\newcommand{\articlename}{二维坐标系中三角形面积的计算}
+
+\newenvironment{solution}{{\noindent\hskip 2em \bf 解 \quad}}{\par}
+\newenvironment{example}{{\noindent\hskip 2em \bf 例 \arabic{counter_exm}\quad}}{\addtocounter{counter_exm}{1}\par}
+\newenvironment{concept}[1]{{\bf #1\quad} \begin{kaishu}}{\end{kaishu}\par}
+\renewenvironment{proof}{{\noindent\hskip 2em \bf 证明 \quad}}{\hfill$\qed$\par}
+
+\begin{document}
+    \begin{center}
+        \LARGE \bf \articlename
+    \end{center}
+
+    \section{问题描述}
+
+    \begin{figure}[h]
+        \centering
+        \begin{tikzpicture}[scale=0.8]
+            % 坐标轴
+            \draw[->] (-0.5,0) -- (7,0) node[right] {$x$};
+            \draw[->] (0,-0.5) -- (0,6) node[above] {$y$};
+
+            % 三个点
+            \coordinate (A) at (2,1.5);
+            \coordinate (B) at (4.5,2.5);
+            \coordinate (C) at (3,4.5);
+
+            % 三角形
+            \draw[thick] (A) -- (B) -- (C) -- cycle;
+
+            % 顶点
+            \fill (A) circle (2pt);
+            \fill (B) circle (2pt);
+            \fill (C) circle (2pt);
+
+            \node[below] at (A) {$A(x_1,y_1)$};
+            \node[right] at (B) {$B(x_2,y_2)$};
+            \node[above] at (C) {$C(x_3,y_3)$};
+
+            % 原点
+            \node[below left] at (0,0) {$O$};
+        \end{tikzpicture}
+        \caption{二维坐标系中三角形的顶点}
+        \label{fig:1}
+    \end{figure}
+
+    如\cref{fig:1}，在二维直角坐标系中，给定三角形的三个顶点
+    \[
+    A(x_1,y_1)\qquad
+    B(x_2,y_2)\qquad
+    C(x_3,y_3)
+    \]
+
+    如何仅根据三个顶点的坐标，计算三角形 $ABC$ 的面积？
+    我们希望找到一种简洁、通用的计算方法，并理解其背后的几何意义。
+
+    \section{解决方法}
+
+    构造三阶行列式
+    \[
+    \det
+    \begin{pmatrix}
+    x_1 & x_2 & x_3\\
+    y_1 & y_2 & y_3\\
+    1   & 1   & 1
+    \end{pmatrix}
+    \]
+
+    这个行列式的绝对值就等于三角形 $ABC$ 面积的两倍，因此三角形的面积为
+    \[
+    \boxed{
+    S_{ABC}
+    =
+    \frac{1}{2}
+    \left|
+    \det
+    \begin{pmatrix}
+    x_1 & x_2 & x_3\\
+    y_1 & y_2 & y_3\\
+    1   & 1   & 1
+    \end{pmatrix}
+    \right|
+    }
+    \]
+
+    \section{原理讲解}
+\end{document}
